@@ -1,4 +1,3 @@
-from contextlib import nullcontext
 from django.shortcuts import HttpResponse, render
 from . import forms
 def home(req):
@@ -33,18 +32,20 @@ def postForm(req):
 
 def userInput(req):
     fn = forms.userInput()
+    n1 = n2 = n3 = n4 = ""
     total=0
-    try:
-        n1=req.POST["fname"]
-        n2=req.POST["mname"]
-        n3=req.POST["lname"]
-        n4=req.POST["email"]
-        n5=int(req.POST["num1"])
-        n6=int(req.POST["num2"])
-        n7=int(req.POST["num3"])
-        total=n5+n6+n7
-    except:
-        pass
+    if req.method == "POST":
+        try:
+            n1 = req.POST.get("fname", "")
+            n2 = req.POST.get("mname", "")
+            n3 = req.POST.get("lname", "")
+            n4 = req.POST.get("email", "")
+            n5 = int(req.POST.get("num1", 0))
+            n6 = int(req.POST.get("num2", 0))
+            n7 = int(req.POST.get("num3", 0))
+            total = n5 + n6 + n7
+        except:
+            pass
 
-    data={'fname': n1, "mname": n2, "lname": n3, "email":n4, 'total': total}
+    data={'fname': n1, "mname": n2, "lname": n3, "email":n4, 'total': total, "form": fn}
     return render(req, "Djangoform.html",data)
